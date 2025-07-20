@@ -1,0 +1,8 @@
+{
+    "require": {
+        "spipu/html2pdf": "^5.2",
+        "phpoffice/phpword": "^1.1",
+        "onokumus/metismenu": "dev-master",
+        "dompdf/dompdf": "^3.1"
+    }
+}
