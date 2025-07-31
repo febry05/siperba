@@ -90,7 +90,7 @@ if ($result->num_rows > 0) {
             <td>' . $row['nama_barang'] . '</td>
             <td>' . $row['jenis_barang'] . '</td>
             <td>' . $row['satuan'] . '</td>
-            <td></td>
+           
         </tr>';
     }
 } else {

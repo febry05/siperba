@@ -22,7 +22,7 @@
     </script>
     <?php
     // Lakukan JOIN antara tabel barang dan jenis
-    $query = "SELECT a.id_pengadaan,a.tanggal_surat,a.nomor_surat,b.nama_barang,j.jenis_barang,b.satuan,p.nama_pegawai,a.status,a.jumlah ,s.nama_supplier
+    $query = "SELECT a.id_pengadaan,a.tanggal_surat,a.nomor_surat,a.file,b.nama_barang,j.jenis_barang,b.satuan,p.nama_pegawai,a.status,a.jumlah ,s.nama_supplier
                 FROM `pengadaan` as a
                 LEFT JOIN barang AS b ON b.id_barang = a.id_barang
                 LEFT JOIN jenis AS j ON j.id_jenis = b.id_jenis
@@ -47,7 +47,8 @@
                             <th>Satuan</th>
                             <th>Supplier</th>
                             <th>Kepala</th>
-                            <th>Status</th>
+                            <th>File Surat</th>
+                            <!-- <th>Status</th> -->
                             <th width="200">Opsi</th>
                         </tr>
                     </thead>
@@ -66,7 +67,13 @@
                             <td><?= $row['satuan'] ?></td>
                             <td><?= $row['nama_supplier'] ?></td>
                             <td><?= $row['nama_pegawai'] ?></td>
-                            <td> <?php
+                            <td><?php if($row['file']){?><a href="<?php echo "uploads/".$row['file'] ?>" target="_blank"
+                                    title="Lihat" class="btn btn-primary"><i class="fa fa-file"></i>
+                                </a> <?php }else{
+                                    echo 'Belum Upload';
+                                } ?>
+                            </td>
+                            <!-- <td> <//?php
                                         $status = $row['status'];
 
                                         if ($status == '0') {
@@ -80,7 +87,7 @@
                                         } else {
                                             echo '<span class="text-secondary">Status Tidak Valid: ' . htmlspecialchars($status) . '</span>';
                                         }
-                                        ?></td>
+                                        ?></td> -->
                             <td>
                                 <a href="?page=pengadaanubah&id_pengadaan=<?= $row['id_pengadaan'] ?>"
                                     class="btn btn-sm btn-primary">

@@ -167,12 +167,13 @@ switch ($page) {
         <?php endif; ?>
 
 
+
+
+        <?php if (isset($_SESSION["level"]) && $_SESSION["level"] == "Admin") : ?>
         <a href="?page=pengadaanbarang"
             class="list-group-item list-group-item-action bg-transparent abu-text <?= $menu["pengadaan"] ?>"><i
                 class="fas fa-cart-shopping me-2"></i>Pengadaan Barang</a>
 
-
-        <?php if (isset($_SESSION["level"]) && $_SESSION["level"] == "Admin") : ?>
         <button class="list-group-item list-group-item-action bg-transparent abu-text <?= $menu["report"] ?>"
             data-bs-toggle="collapse" data-bs-target="#report-collapse" aria-expanded="true">
             <i class="fas fa-print me-2"></i>Report
