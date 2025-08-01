@@ -29,6 +29,18 @@ $tgl = date('Y-m', strtotime($tanggal));
 $status  = $_GET['status'] ?? '';
 
 
+// Ubah status ke teks
+$statusText = 'Semua';
+if ($status !== '') {
+    $statusText = match ($status) {
+        '0' => 'Menunggu Persetujuan',
+        '1' => 'Telah Disetujui',
+        '2' => 'Tidak Disetujui',
+        '3' => 'Selesai',
+        default => 'Tidak Diketahui',
+    };
+}
+
 
 $sql = "SELECT a.id_pengadaan,a.tanggal_surat,a.nomor_surat,b.nama_barang,j.jenis_barang,b.satuan,p.nama_pegawai,a.status,a.jumlah ,s.nama_supplier
                 FROM `pengadaan` as a
@@ -78,6 +90,11 @@ $html = '
 </div>
 
 <div class="title">Laporan Pengadaan Barang</div>
+<div style=" margin-top: 5px;">
+    <strong>Periode:</strong> ' . (!empty($tanggal) ? date('F Y', strtotime($tanggal)) : 'Semua') . ' <br>
+    <strong>Status:</strong> ' . $statusText . '
+</div>
+
 
 <table>
     <thead>

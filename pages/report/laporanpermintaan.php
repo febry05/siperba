@@ -179,7 +179,7 @@
                             <input type="date" name="tanggal" id="tanggal" class="form-control" value="">
                         </div>
                         <div class="col-md-4">
-                            <label for="status" class="form-label">Suplier</label>
+                            <label for="status" class="form-label">Divisi</label>
                             <?php
                                 $selectJenisSQL = "SELECT * FROM divisi ORDER BY id_divisi ASC";
                                 $resultSetJenis = mysqli_query($koneksi, $selectJenisSQL);

@@ -26,6 +26,23 @@ if ($conn->connect_error) {
 // Ambil filter dari for
 $jenis  = $_GET['jenis'] ?? '';
 
+// Ambil nama jenis dari DB jika tersedia
+$jenisText = 'Semua';
+if (!empty($jenis)) {
+    $stmtJenis = $conn->prepare("SELECT jenis_barang FROM jenis WHERE id_jenis = ?");
+    $stmtJenis->bind_param("s", $jenis);
+    $stmtJenis->execute();
+    $resultJenis = $stmtJenis->get_result();
+    if ($resultJenis->num_rows > 0) {
+        $rowJenis = $resultJenis->fetch_assoc();
+        $jenisText = $rowJenis['jenis_barang'];
+    } else {
+        $jenisText = 'Tidak Diketahui';
+    }
+    $stmtJenis->close();
+}
+
+
 
 
 $sql = "SELECT 
@@ -71,6 +88,11 @@ $html = '
 </div>
 
 <div class="title">Laporan Stok Barang</div>
+<div style="margin-top: 5px;">
+    <strong>Jenis:</strong> ' . $jenisText . '<br>
+
+</div>
+
 
 <table>
     <thead>

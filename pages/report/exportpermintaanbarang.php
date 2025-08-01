@@ -8,15 +8,14 @@ if (file_exists($logoPath)) {
     $logoBase64 = base64_encode(file_get_contents($logoPath));
     $logo = 'data:image/png;base64,' . $logoBase64;
 } else {
-    $logo = ''; // atau logo default
+    $logo = '';
 }
-
 
 // Koneksi database
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db   = "siperba"; // Ganti dengan nama database kamu
+$db   = "siperba";
 
 $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
@@ -28,8 +27,19 @@ $tanggal = $_GET['tanggal'] ?? '';
 $tgl = date('Y-m', strtotime($tanggal));
 $status  = $_GET['status'] ?? '';
 
+// Ubah status ke teks
+$statusText = 'Semua';
+if ($status !== '') {
+    $statusText = match ($status) {
+        '0' => 'Menunggu Persetujuan',
+        '1' => 'Telah Disetujui',
+        '2' => 'Tidak Disetujui',
+        '3' => 'Selesai',
+        default => 'Tidak Diketahui',
+    };
+}
 
-
+// SQL query
 $sql = "SELECT
     p.id_permintaan,
     p.tgl_permintaan,
@@ -49,25 +59,18 @@ JOIN pegawai pg ON pg.id_pegawai = p.id_pegawai
 JOIN divisi d ON d.id_divisi = pg.id_divisi
 WHERE 1=1";
 
-
-// Tambahkan filter
-if (!empty($tanggal)) {
-    // Pastikan format aman (YYYY-MM)
-    if (preg_match('/^\d{4}-\d{2}$/', $tgl)) {
-        $sql .= " AND DATE_FORMAT(p.tgl_permintaan, '%Y-%m') <= '$tgl'";
-    }
+// Filter tanggal
+if (!empty($tanggal) && preg_match('/^\d{4}-\d{2}$/', $tgl)) {
+    $sql .= " AND DATE_FORMAT(p.tgl_permintaan, '%Y-%m') <= '$tgl'";
 }
 
-// Filter status jika ada
-if (!empty($status)) {
+// Filter status
+if ($status !== '') {
     $sql .= " AND pd.status = '$status'";
 }
 
 $sql .= " ORDER BY p.tgl_permintaan DESC";
-
 $result = $conn->query($sql);
-
-
 
 // Siapkan HTML untuk PDF
 $html = '
@@ -84,12 +87,16 @@ $html = '
 <div class="header">
     <div style="position: absolute; top: 20px; right: 40px;" class="logo"> <img src="' . $logo . '" class="logo" /></div>
     <div>Dinas Provinsi Kalimantan Selatan<br>
-    Jln Jend A. Yani Km 7,5 hanyar, Kabupaten Banjar Kode Pos 70654<br>
+    Jln Jend A. Yani Km 7,5 Hanyar, Kabupaten Banjar Kode Pos 70654<br>
     Telp (0511) 6795594<br>
     Email : disparprovkalsel</div>
 </div>
 
 <div class="title">Laporan Permintaan Barang</div>
+<div style=" margin-top: 5px;">
+    <strong>Periode:</strong> ' . (!empty($tanggal) ? date('F Y', strtotime($tanggal)) : 'Semua') . ' <br>
+    <strong>Status:</strong> ' . $statusText . '
+</div>
 
 <table>
     <thead>
@@ -112,17 +119,14 @@ $html = '
 $no = 1;
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
+        $statuss = match ($row['status']) {
+            '0' => '<span class="text-warning">Menunggu Persetujuan</span>',
+            '1' => '<span class="text-primary">Telah Disetujui</span>',
+            '2' => '<span class="text-danger">Tidak Disetujui</span>',
+            '3' => '<span class="text-success">Selesai</span>',
+            default => '<span class="text-secondary">Tidak Diketahui</span>',
+        };
 
-        
-        if ($row['status'] == '0') {
-            $statuss = '<span class="text-warning">Menunggu Persetujuan</span>';
-        } elseif ($row['status'] == '1') {
-        $statuss = '<span class="text-primary">Telah Disetujui</span>';
-        } elseif ($row['status'] == '2') {
-            $statuss = '<span class="text-danger">Tidak Disetujui</span>';
-        } elseif ($row['status'] == '3') {
-            $statuss = '<span class="text-success">Selesai</span>';
-        } 
         $html .= '<tr>
             <td>' . $no++ . '</td>
             <td>' . date('d M Y', strtotime($row['tgl_permintaan'])) . '</td>
@@ -131,10 +135,10 @@ if ($result->num_rows > 0) {
             <td>' . $row['jenis_barang'] . '</td>
             <td>' . $row['jumlah'] . '</td>
             <td>' . $row['satuan'] . '</td>
-            <td>'   .$statuss . '</td>
+            <td>' . $statuss . '</td>
             <td>' . $row['nama_pegawai'] . '</td>
             <td>' . $row['nama_divisi'] . '</td>
-            <td> Aktif </td>
+            <td>Aktif</td>
         </tr>';
     }
 } else {
@@ -146,7 +150,7 @@ $html .= '
 .footer {
     margin-top: 50px;
     text-align: right;
-    padding-right: 100px; /* geser ke kiri */
+    padding-right: 100px;
 }
 </style>
 
