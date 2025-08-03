@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Dompdf\Dompdf;
+session_start(); 
+
 
 $logoPath = __DIR__ . '/../../assets/images/wonderfull.jpg';
 if (file_exists($logoPath)) {
@@ -22,10 +24,13 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
+
 // Ambil filter dari form
-$tanggal = $_GET['tanggal'] ?? '';
-$tgl = date('Y-m', strtotime($tanggal));
+$startdate = $_GET['startdate'] ?? '';
+$enddate = $_GET['enddate'] ?? '';
+// $tgl = date('Y-m', strtotime($tanggal));
 $jenis  = $_GET['jenis'] ?? '';
+$usercetak = $_SESSION["nama_pegawai"];
 
 // Ambil nama jenis dari DB jika tersedia
 $jenisText = 'Semua';
@@ -59,9 +64,9 @@ LEFT JOIN barang_keluar bk ON bk.id_permintaan_detail = pd.id_permintaan_detail
 LEFT JOIN stok s ON s.id_barang = b.id_barang
 WHERE 1=1";
 
-// Filter berdasarkan tanggal
-if (!empty($tanggal) && preg_match('/^\d{4}-\d{2}$/', $tgl)) {
-    $sql .= " AND DATE_FORMAT(bm.tanggal_masuk, '%Y-%m') = '$tgl'";
+// Filter tanggal
+if (!empty($startdate)) {
+    $sql .= " AND bm.tanggal_masuk BETWEEN '$startdate' AND '$enddate'";
 }
 
 // Filter berdasarkan jenis
@@ -99,11 +104,19 @@ $html = '
 </div>
 
 <div class="title">Laporan Rekap Barang</div>
-<div style="margin-top: 5px;">
-    <strong>Periode:</strong> ' . (!empty($tanggal) ? date('F Y', strtotime($tanggal)) : 'Semua') . '<br>
-    <strong>Jenis:</strong> ' . $jenisText . '<br>
-    <strong>Tanggal Cetak:</strong> ' . $tanggalCetak . '
-</div>
+<div class="row">
+        <div class="col-md-6">
+            <div style=" margin-top: 10px;">
+            <strong>Periode:</strong> ' .  date('d F Y', strtotime($startdate)).' - '. date('d F Y', strtotime($enddate)).' <br>
+            <strong>Jenis Barang:</strong> ' . $jenisText . '<br>
+        </div>
+         <div class="col-md-6" style="position: absolute; top: 100px; right: 40px;" >
+            <div style=" margin-top: 5px;">
+            <strong>Tanggal Cetak:</strong> ' . DATE('d F Y') . '<br>
+            <strong>User Pencetak:</strong> ' . $usercetak. '<br>
+        </div>
+        </div>
+    </div>
 
 <table>
     <thead>

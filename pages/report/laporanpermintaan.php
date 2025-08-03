@@ -6,11 +6,15 @@
             <div class="card-body">
                 <form action="pages/report/exportpermintaanbarang.php" method="get" target="_blank">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" name="tanggal" id="tanggal" class="form-control" value="">
+                        <div class="col-md-3">
+                            <label for="startdate" class="form-label">Dari Tanggal</label>
+                            <input type="date" name="startdate" id="startdate" class="form-control" value="" required>
                         </div>
-                        <div class="col-md-4">
+                         <div class="col-md-3">
+                            <label for="enddate" class="form-label">Sampai Dengan</label>
+                            <input type="date" name="enddate" id="enddate" class="form-control" value="" required>
+                        </div>
+                        <div class="col-md-3">
                             <label for="status" class="form-label">Status Permintaan</label>
                             <select name="status" id="status" class="form-select">
                                 <option value="">Semua Status</option>
@@ -20,7 +24,7 @@
                                 <option value="Selesai">Selesai</option>
                             </select>
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-success">Export PDF</button>
                         </div>
                     </div>
@@ -34,11 +38,15 @@
             <div class="card-body">
                 <form action="pages/report/exportpengadaanbarang.php" method="get" target="_blank">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" name="tanggal" id="tanggal" class="form-control" value="">
+                        <div class="col-md-3">
+                            <label for="startdate" class="form-label">Dari Tanggal</label>
+                            <input type="date" name="startdate" id="startdate" class="form-control" value="" required>
                         </div>
-                        <div class="col-md-4">
+                         <div class="col-md-3">
+                            <label for="enddate" class="form-label">Sampai Dengan</label>
+                            <input type="date" name="enddate" id="enddate" class="form-control" value="" required>
+                        </div>
+                        <div class="col-md-3">
                             <label for="status" class="form-label">Status Pengadaan</label>
                             <select name="status" id="status" class="form-select">
                                 <option value="">Semua Status</option>
@@ -48,7 +56,7 @@
                                 <option value="Selesai">Selesai</option>
                             </select>
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-success">Export PDF</button>
                         </div>
                     </div>
@@ -62,7 +70,7 @@
             <div class="card-body">
                 <form action="pages/report/exportstok.php" method="get" target="_blank">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="status" class="form-label">Jenis Barang</label>
 
                             <?php
@@ -82,7 +90,7 @@
                             </select>
 
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-success">Export PDF</button>
                         </div>
                     </div>
@@ -97,11 +105,15 @@
             <div class="card-body">
                 <form action="pages/report/exportrekap.php" method="get" target="_blank">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" name="tanggal" id="tanggal" class="form-control" value="">
+                        <div class="col-md-3">
+                            <label for="startdate" class="form-label">Dari Tanggal</label>
+                            <input type="date" name="startdate" id="startdate" class="form-control" value="" required>
                         </div>
-                        <div class="col-md-4">
+                         <div class="col-md-3">
+                            <label for="enddate" class="form-label">Sampai Dengan</label>
+                            <input type="date" name="enddate" id="enddate" class="form-control" value="" required>
+                        </div>
+                        <div class="col-md-3">
                             <label for="status" class="form-label">Jenis Barang</label>
 
                             <?php
@@ -121,7 +133,7 @@
                             </select>
 
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-success">Export PDF</button>
                         </div>
                     </div>
@@ -136,11 +148,15 @@
             <div class="card-body">
                 <form action="pages/report/exportbarangmasuk.php" method="get" target="_blank">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" name="tanggal" id="tanggal" class="form-control" value="">
+                       <div class="col-md-3">
+                            <label for="startdate" class="form-label">Dari Tanggal</label>
+                            <input type="date" name="startdate" id="startdate" class="form-control" value="" required>
                         </div>
-                        <div class="col-md-4">
+                         <div class="col-md-3">
+                            <label for="enddate" class="form-label">Sampai Dengan</label>
+                            <input type="date" name="enddate" id="enddate" class="form-control" value="" required>
+                        </div>
+                        <div class="col-md-3">
                             <label for="status" class="form-label">Suplier</label>
                             <?php
                                 $selectJenisSQL = "SELECT * FROM supplier ORDER BY id_supplier ASC";
@@ -159,7 +175,7 @@
                             </select>
 
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-success">Export PDF</button>
                         </div>
                     </div>
@@ -174,11 +190,15 @@
             <div class="card-body">
                 <form action="pages/report/exportbarangkeluar.php" method="get" target="_blank">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" name="tanggal" id="tanggal" class="form-control" value="">
+                       <div class="col-md-3">
+                            <label for="startdate" class="form-label">Dari Tanggal</label>
+                            <input type="date" name="startdate" id="startdate" class="form-control" value="" required>
                         </div>
-                        <div class="col-md-4">
+                         <div class="col-md-3">
+                            <label for="enddate" class="form-label">Sampai Dengan</label>
+                            <input type="date" name="enddate" id="enddate" class="form-control" value="" required>
+                        </div>
+                        <div class="col-md-3">
                             <label for="status" class="form-label">Divisi</label>
                             <?php
                                 $selectJenisSQL = "SELECT * FROM divisi ORDER BY id_divisi ASC";
@@ -197,7 +217,7 @@
                             </select>
 
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-success">Export PDF</button>
                         </div>
                     </div>

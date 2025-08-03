@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Dompdf\Dompdf;
+session_start(); 
 
 $logoPath = __DIR__ . '/../../assets/images/wonderfull.jpg';
 if (file_exists($logoPath)) {
@@ -23,10 +24,12 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil filter dari for
-$tanggal = $_GET['tanggal'] ?? '';
-$tgl = date('Y-m', strtotime($tanggal));
+// Ambil filter dari form
+$startdate = $_GET['startdate'] ?? '';
+$enddate = $_GET['enddate'] ?? '';
+// $tgl = date('Y-m', strtotime($tanggal));
 $status  = $_GET['status'] ?? '';
+$usercetak = $_SESSION["nama_pegawai"];
 
 
 // Ubah status ke teks
@@ -50,12 +53,9 @@ $sql = "SELECT a.id_pengadaan,a.tanggal_surat,a.nomor_surat,b.nama_barang,j.jeni
                 LEFT JOIN supplier AS s ON s.id_supplier = a.id_supplier
             WHERE 1=1";
 
-// Tambahkan filter
-if (!empty($tanggal)) {
-    // Pastikan format aman (YYYY-MM)
-    if (preg_match('/^\d{4}-\d{2}$/', $tgl)) {
-        $sql .= " AND DATE_FORMAT(a.tanggal_surat, '%Y-%m') = '$tgl'";
-    }
+// Filter tanggal
+if (!empty($startdate)) {
+    $sql .= " AND a.tanggal_surat BETWEEN '$startdate' AND '$enddate'";
 }
 
 if (!empty($status)) {
@@ -90,11 +90,19 @@ $html = '
 </div>
 
 <div class="title">Laporan Pengadaan Barang</div>
-<div style=" margin-top: 5px;">
-    <strong>Periode:</strong> ' . (!empty($tanggal) ? date('F Y', strtotime($tanggal)) : 'Semua') . ' <br>
-    <strong>Status:</strong> ' . $statusText . '
-</div>
-
+  <div class="row">
+        <div class="col-md-6">
+            <div style=" margin-top: 10px;">
+            <strong>Periode:</strong> ' .  date('d F Y', strtotime($startdate)).' - '. date('d F Y', strtotime($enddate)).' <br>
+            <strong>Status:</strong> ' . $statusText . '<br>
+        </div>
+         <div class="col-md-6" style="position: absolute; top: 100px; right: 40px;" >
+            <div style=" margin-top: 5px;">
+            <strong>Tanggal Cetak:</strong> ' . DATE('d F Y') . '<br>
+            <strong>User Pencetak:</strong> ' . $usercetak. '<br>
+        </div>
+        </div>
+    </div>
 
 <table>
     <thead>

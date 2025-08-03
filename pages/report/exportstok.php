@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Dompdf\Dompdf;
+session_start(); 
 
 $logoPath = __DIR__ . '/../../assets/images/wonderfull.jpg';
 if (file_exists($logoPath)) {
@@ -25,6 +26,7 @@ if ($conn->connect_error) {
 
 // Ambil filter dari for
 $jenis  = $_GET['jenis'] ?? '';
+$usercetak = $_SESSION["nama_pegawai"];
 
 // Ambil nama jenis dari DB jika tersedia
 $jenisText = 'Semua';
@@ -88,10 +90,19 @@ $html = '
 </div>
 
 <div class="title">Laporan Stok Barang</div>
-<div style="margin-top: 5px;">
-    <strong>Jenis:</strong> ' . $jenisText . '<br>
+<div class="row">
+        <div class="col-md-6">
+            <div style=" margin-top: 10px;"><br>
+            <strong>Jenis Barang:</strong> ' . $jenisText . '<br>
+        </div>
+         <div class="col-md-6" style="position: absolute; top: 100px; right: 40px;" >
+            <div style=" margin-top: 5px;">
+            <strong>Tanggal Cetak:</strong> ' . DATE('d F Y') . '<br>
+            <strong>User Pencetak:</strong> ' . $usercetak. '<br>
+        </div>
+        </div>
+    </div>
 
-</div>
 
 
 <table>

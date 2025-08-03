@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
 use Dompdf\Dompdf;
+session_start(); 
 
 // === Konversi logo ke base64 ===
 $logoPath = __DIR__ . '/../../assets/images/wonderfull.jpg';
@@ -10,10 +11,12 @@ $logo = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_g
 $conn = new mysqli("localhost", "root", "", "siperba");
 if ($conn->connect_error) die("Koneksi gagal: " . $conn->connect_error);
 
-// === Ambil parameter filter ===
-$tanggal = $_GET['tanggal'] ?? '';
-$tgl     = date('Y-m', strtotime($tanggal));
+// Ambil filter dari form
+$startdate = $_GET['startdate'] ?? '';
+$enddate = $_GET['enddate'] ?? '';
+// $tgl = date('Y-m', strtotime($tanggal));
 $divisi  = $_GET['divisi'] ?? '';
+$usercetak = $_SESSION["nama_pegawai"];
 
 // === Ambil nama divisi ===
 $divisiText = 'Semua';
@@ -41,8 +44,9 @@ $sql = "SELECT barang_keluar.tanggal_keluar, barang_keluar.nomor_keluar, barang.
     LEFT JOIN jenis ON jenis.id_jenis = barang.id_jenis
     WHERE 1=1";
 
-if (!empty($tanggal) && preg_match('/^\d{4}-\d{2}$/', $tgl)) {
-    $sql .= " AND DATE_FORMAT(barang_keluar.tanggal_keluar, '%Y-%m') = '$tgl'";
+// Filter tanggal
+if (!empty($startdate)) {
+    $sql .= " AND barang_keluar.tanggal_keluar BETWEEN '$startdate' AND '$enddate'";
 }
 
 if (!empty($divisi)) {
@@ -77,11 +81,19 @@ $html = '
 </div>
 
 <div class="title">Laporan Barang Keluar</div>
-
-<div style="margin-top: 5px;">
-    <strong>Periode:</strong> ' . (!empty($tanggal) ? date('F Y', strtotime($tanggal)) : 'Semua') . '<br>
-    <strong>Divisi:</strong> ' . $divisiText . '
-</div>
+    <div class="row">
+        <div class="col-md-6">
+            <div style=" margin-top: 10px;">
+            <strong>Periode:</strong> ' .  date('d F Y', strtotime($startdate)).' - '. date('d F Y', strtotime($enddate)).' <br>
+            <strong>Divisi:</strong> ' . $divisiText . '<br>
+        </div>
+         <div class="col-md-6" style="position: absolute; top: 100px; right: 40px;" >
+            <div style=" margin-top: 5px;">
+            <strong>Tanggal Cetak:</strong> ' . DATE('d F Y') . '<br>
+            <strong>User Pencetak:</strong> ' . $usercetak. '<br>
+        </div>
+        </div>
+    </div>
 
 <table>
     <thead>

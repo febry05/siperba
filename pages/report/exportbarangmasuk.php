@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Dompdf\Dompdf;
+session_start(); 
 
 // Gambar logo
 $logoPath = __DIR__ . '/../../assets/images/wonderfull.jpg';
@@ -20,10 +21,13 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil filter dari URL
-$tanggal = $_GET['tanggal'] ?? '';
-$tgl = !empty($tanggal) ? date('Y-m', strtotime($tanggal)) : '';
+// Ambil filter dari form
+$startdate = $_GET['startdate'] ?? '';
+$enddate = $_GET['enddate'] ?? '';
+// $tgl = date('Y-m', strtotime($tanggal));
 $supplier = $_GET['supplier'] ?? '';
+$usercetak = $_SESSION["nama_pegawai"];
+
 
 // Ambil nama supplier jika diset
 $supplierText = 'Semua';
@@ -50,10 +54,11 @@ $sql = "SELECT barang_masuk.*, supplier.nama_supplier, pegawai.nama_pegawai, bar
         LEFT JOIN jenis ON jenis.id_jenis = barang.id_jenis
         WHERE 1=1";
 
-if (!empty($tgl)) {
-    $sql .= " AND DATE_FORMAT(barang_masuk.tanggal_masuk, '%Y-%m') = '$tgl'";
-}
 
+// Filter tanggal
+if (!empty($startdate)) {
+    $sql .= " AND barang_masuk.tanggal_masuk BETWEEN '$startdate' AND '$enddate'";
+}
 if (!empty($supplier)) {
     $sql .= " AND barang_masuk.id_supplier = '$supplier'";
 }
@@ -87,10 +92,20 @@ $html = '
 </div>
 
 <div class="title">Laporan Barang Masuk</div>
-<div style="margin-top: 5px;">
-    <strong>Periode:</strong> ' . (!empty($tanggal) ? date('F Y', strtotime($tanggal)) : 'Semua') . '<br>
-    <strong>Supplier:</strong> ' . $supplierText . '
-</div>
+    <div class="row">
+        <div class="col-md-6">
+            <div style=" margin-top: 10px;">
+            <strong>Periode:</strong> ' .  date('d F Y', strtotime($startdate)).' - '. date('d F Y', strtotime($enddate)).' <br>
+            <strong>Supplier:</strong> ' . $supplierText . '<br>
+        </div>
+         <div class="col-md-6" style="position: absolute; top: 100px; right: 40px;" >
+            <div style=" margin-top: 5px;">
+            <strong>Tanggal Cetak:</strong> ' . DATE('d F Y') . '<br>
+            <strong>User Pencetak:</strong> ' . $usercetak. '<br>
+        </div>
+        </div>
+    </div>
+
 
 <table>
     <thead>
